@@ -1,1 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Half Finished Fanta</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
+      body {
+        font-family: "Comic Sans MS", "Arial", sans-serif;
+        background: linear-gradient(
+          135deg,
+          #ff6b35 0%,
+          #f7931e 50%,
+          #ffd23f 100%
+        );
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        overflow-x: hidden;
+        position: relative;
+      }
+
+      /* Animated background stars */
+      .star {
+        position: absolute;
+        color: white;
+        font-size: 20px;
+        animation: twinkle 2s infinite;
+        opacity: 0.7;
+      }
+
+      @keyframes twinkle {
+        0%,
+        100% {
+          opacity: 0.3;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.2);
+        }
+      }
+
+      h1 {
+        color: #fff;
+        font-size: 3.5rem;
+        margin-bottom: 30px;
+        text-align: center;
+        text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4);
+        transition: all 0.5s ease;
+        font-weight: bold;
+      }
+
+      .scene-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 50px;
+        flex-wrap: wrap;
+      }
+
+      /* Angel Character */
+      .angel {
+        width: 200px;
+        height: 300px;
+        position: relative;
+        opacity: 0;
+        transform: translateX(-50px);
+        transition: all 0.5s ease;
+      }
+
+      .angel.show {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      .angel-head {
+        width: 80px;
+        height: 80px;
+        background: #ffe5b4;
+        border-radius: 50%;
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 3px solid #333;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .angel-hair {
+        width: 90px;
+        height: 60px;
+        background: #ffd700;
+        border-radius: 50% 50% 0 0;
+        position: absolute;
+        top: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .angel-eye {
+        width: 12px;
+        height: 12px;
+        background: #333;
+        border-radius: 50%;
+        position: absolute;
+        top: 35px;
+      }
+
+      .angel-eye.left {
+        left: 25px;
+      }
+      .angel-eye.right {
+        right: 25px;
+      }
+
+      .angel-mouth {
+        width: 20px;
+        height: 10px;
+        border: 3px solid #333;
+        border-top: none;
+        border-radius: 0 0 20px 20px;
+        position: absolute;
+        top: 50px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .angel-body {
+        width: 100px;
+        height: 120px;
+        background: #4a90e2;
+        position: absolute;
+        top: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 20px 20px 10px 10px;
+        border: 3px solid #333;
+      }
+
+      .angel-arm {
+        width: 30px;
+        height: 80px;
+        background: #ffe5b4;
+        position: absolute;
+        top: 90px;
+        border-radius: 15px;
+        border: 3px solid #333;
+        transition: transform 0.3s ease;
+      }
+
+      .angel-arm.left {
+        left: 10px;
+        transform-origin: top center;
+      }
+
+      .angel-arm.right {
+        right: 10px;
+        transform-origin: top center;
+      }
+
+      .angel.drinking .angel-arm.left {
+        transform: rotate(-45deg);
+      }
+
+      .angel.drinking .angel-arm.right {
+        transform: rotate(45deg);
+      }
+
+      .angel-leg {
+        width: 35px;
+        height: 60px;
+        background: #2c5f8d;
+        position: absolute;
+        top: 200px;
+        border-radius: 10px 10px 5px 5px;
+        border: 3px solid #333;
+      }
+
+      .angel-leg.left {
+        left: 30px;
+      }
+      .angel-leg.right {
+        right: 30px;
+      }
+
+      /* Fanta Can */
+      .fanta-container {
+        position: relative;
+        width: 180px;
+        height: 400px;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+        filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.4));
+      }
+
+      .fanta-container:hover {
+        transform: scale(1.1) rotate(5deg);
+      }
+
+      .fanta-container:active {
+        transform: scale(0.95);
+      }
+
+      .fanta-can {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          180deg,
+          #ff6b35 0%,
+          #ff6b35 8%,
+          #ffffff 8%,
+          #ffffff 12%,
+          #ff6b35 12%,
+          #ff6b35 88%,
+          #c4c4c4 88%,
+          #c4c4c4 92%,
+          #ff6b35 92%,
+          #ff6b35 100%
+        );
+        border-radius: 20px 20px 25px 25px;
+        position: relative;
+        border: 4px solid #1a1a1a;
+        box-shadow: inset -10px 0 30px rgba(0, 0, 0, 0.3),
+          inset 10px 0 30px rgba(255, 255, 255, 0.2),
+          inset 0 -20px 40px rgba(0, 0, 0, 0.2), 0 15px 50px rgba(0, 0, 0, 0.4),
+          0 0 0 2px rgba(255, 255, 255, 0.1);
+        overflow: hidden;
+      }
+
+      /* 3D highlight effect on can */
+      .fanta-can::before {
+        content: "";
+        position: absolute;
+        top: 15%;
+        left: 10%;
+        width: 30%;
+        height: 60%;
+        background: linear-gradient(
+          90deg,
+          rgba(255, 255, 255, 0.4) 0%,
+          rgba(255, 255, 255, 0.1) 50%,
+          transparent 100%
+        );
+        border-radius: 50px;
+        z-index: 4;
+        pointer-events: none;
+      }
+
+      /* Side shadow for depth */
+      .fanta-can::after {
+        content: "";
+        position: absolute;
+        top: 15%;
+        right: 10%;
+        width: 25%;
+        height: 60%;
+        background: linear-gradient(
+          90deg,
+          transparent 0%,
+          rgba(0, 0, 0, 0.2) 100%
+        );
+        border-radius: 50px;
+        z-index: 4;
+        pointer-events: none;
+      }
+
+      /* Fanta Logo/Branding */
+      .fanta-logo {
+        position: absolute;
+        top: 15%;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 3rem;
+        font-weight: bold;
+        color: #ffffff;
+        text-shadow: 3px 3px 0px #ff6b35, 6px 6px 0px #333;
+        letter-spacing: 5px;
+        z-index: 10;
+      }
+
+      .fanta-label {
+        position: absolute;
+        top: 25%;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 1.2rem;
+        color: #ff6b35;
+        font-weight: bold;
+        text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.8);
+        z-index: 10;
+      }
+
+      /* Liquid inside can */
+      .liquid-container {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 50%;
+        overflow: hidden;
+        z-index: 2;
+        transition: height 2.5s ease-out;
+        border-radius: 0 0 20px 20px;
+      }
+
+      .liquid {
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          to top,
+          #ff6b35 0%,
+          #ff8c42 30%,
+          #ffa366 60%,
+          rgba(255, 255, 255, 0.3) 100%
+        );
+        position: relative;
+        animation: liquid-wave 3s ease-in-out infinite;
+      }
+
+      @keyframes liquid-wave {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        50% {
+          transform: translateX(5px);
+        }
+      }
+
+      /* Bubbles in liquid */
+      .bubbles {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        pointer-events: none;
+        z-index: 3;
+      }
+
+      .bubble {
+        position: absolute;
+        background: rgba(255, 255, 255, 0.7);
+        border-radius: 50%;
+        animation: bubble-rise 2s infinite ease-in;
+      }
+
+      @keyframes bubble-rise {
+        0% {
+          bottom: -10px;
+          opacity: 0.8;
+          transform: translateX(0) scale(0.3);
+        }
+        50% {
+          opacity: 1;
+        }
+        100% {
+          bottom: 100%;
+          opacity: 0;
+          transform: translateX(30px) scale(1);
+        }
+      }
+
+      /* Can top (opening) */
+      .can-top {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80%;
+        height: 8%;
+        background: linear-gradient(
+          180deg,
+          #e8e8e8 0%,
+          #c4c4c4 30%,
+          #a0a0a0 70%,
+          #8a8a8a 100%
+        );
+        border-radius: 20px 20px 5px 5px;
+        border: 4px solid #1a1a1a;
+        border-bottom: none;
+        z-index: 5;
+        box-shadow: inset 0 5px 10px rgba(255, 255, 255, 0.3),
+          inset 0 -5px 10px rgba(0, 0, 0, 0.3), 0 2px 5px rgba(0, 0, 0, 0.2);
+      }
+
+      .can-tab {
+        position: absolute;
+        top: 5px;
+        right: 20px;
+        width: 30px;
+        height: 20px;
+        background: linear-gradient(180deg, #d0d0d0 0%, #a0a0a0 100%);
+        border: 2px solid #1a1a1a;
+        border-radius: 5px 5px 0 0;
+        z-index: 6;
+        box-shadow: inset 0 2px 5px rgba(255, 255, 255, 0.4),
+          inset 0 -2px 5px rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+      }
+
+      /* Drinking animation */
+      .drinking-effect {
+        position: absolute;
+        top: -50px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 80px;
+        background: linear-gradient(
+          to bottom,
+          transparent 0%,
+          rgba(255, 107, 53, 0.6) 50%,
+          rgba(255, 107, 53, 0.8) 100%
+        );
+        border-radius: 30px 30px 0 0;
+        opacity: 0;
+        pointer-events: none;
+        z-index: 20;
+        transition: all 0.3s ease;
+      }
+
+      .drinking-effect.active {
+        opacity: 1;
+        animation: drinking-flow 2.5s ease-out;
+      }
+
+      @keyframes drinking-flow {
+        0% {
+          height: 0;
+          top: -50px;
+        }
+        50% {
+          height: 150px;
+          top: -150px;
+        }
+        100% {
+          height: 0;
+          top: -200px;
+          opacity: 0;
+        }
+      }
+
+      /* Sparkles */
+      .sparkle {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background: white;
+        border-radius: 50%;
+        pointer-events: none;
+        animation: sparkle 1.5s ease-out forwards;
+        box-shadow: 0 0 10px white;
+      }
+
+      @keyframes sparkle {
+        0% {
+          opacity: 1;
+          transform: scale(0) translateY(0) rotate(0deg);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1.5) translateY(-30px) rotate(180deg);
+        }
+        100% {
+          opacity: 0;
+          transform: scale(0) translateY(-60px) rotate(360deg);
+        }
+      }
+
+      /* Instructions */
+      .instructions {
+        color: #fff;
+        margin-top: 40px;
+        text-align: center;
+        font-size: 1.5rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+        font-weight: bold;
+      }
+
+      /* Celebration confetti */
+      .confetti {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background: #ffd700;
+        pointer-events: none;
+        animation: confetti-fall 3s ease-out forwards;
+      }
+
+      @keyframes confetti-fall {
+        0% {
+          top: -10px;
+          opacity: 1;
+          transform: rotate(0deg);
+        }
+        100% {
+          top: 100vh;
+          opacity: 0;
+          transform: rotate(720deg);
+        }
+      }
+
+      /* Drink Selection Menu */
+      .menu-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          #ff6b35 0%,
+          #f7931e 50%,
+          #ffd23f 100%
+        );
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        transition: opacity 0.5s ease, visibility 0.5s ease;
+      }
+
+      .menu-container.hidden {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+
+      .menu-title {
+        color: #fff;
+        font-size: 4rem;
+        margin-bottom: 50px;
+        text-align: center;
+        text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.4);
+        font-weight: bold;
+      }
+
+      .drink-options {
+        display: flex;
+        gap: 30px;
+        flex-wrap: wrap;
+        justify-content: center;
+        max-width: 800px;
+      }
+
+      .drink-option {
+        background: rgba(255, 255, 255, 0.95);
+        border: 5px solid #333;
+        border-radius: 20px;
+        padding: 30px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-align: center;
+        min-width: 200px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      }
+
+      .drink-option:hover {
+        transform: scale(1.1) rotate(5deg);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+      }
+
+      .drink-option:active {
+        transform: scale(0.95);
+      }
+
+      .drink-emoji {
+        font-size: 5rem;
+        margin-bottom: 15px;
+        display: block;
+      }
+
+      .drink-name {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #333;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+      }
+
+      .main-scene {
+        display: none;
+      }
+
+      .main-scene.show {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2.5rem;
+        }
+
+        .menu-title {
+          font-size: 2.5rem;
+          margin-bottom: 30px;
+        }
+
+        .drink-options {
+          gap: 20px;
+        }
+
+        .drink-option {
+          min-width: 150px;
+          padding: 20px;
+        }
+
+        .drink-emoji {
+          font-size: 3.5rem;
+        }
+
+        .drink-name {
+          font-size: 1.5rem;
+        }
+
+        .scene-container {
+          gap: 20px;
+        }
+
+        .fanta-container {
+          width: 150px;
+          height: 330px;
+        }
+
+        .angel {
+          width: 150px;
+          height: 220px;
+        }
+
+        .fanta-logo {
+          font-size: 2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1 id="title">Half Finished Fanta</h1>
+
+    <div class="scene-container">
+      <div class="angel" id="angel">
+        <div class="angel-hair"></div>
+        <div class="angel-head">
+          <div class="angel-eye left"></div>
+          <div class="angel-eye right"></div>
+          <div class="angel-mouth"></div>
+        </div>
+        <div class="angel-body"></div>
+        <div class="angel-arm left"></div>
+        <div class="angel-arm right"></div>
+        <div class="angel-leg left"></div>
+        <div class="angel-leg right"></div>
+      </div>
+
+      <div class="fanta-container" id="fantaContainer">
+        <div class="can-top">
+          <div class="can-tab"></div>
+        </div>
+        <div class="fanta-can">
+          <div class="fanta-logo">FANTA</div>
+          <div class="fanta-label">ORANGE</div>
+          <div class="liquid-container" id="liquidContainer">
+            <div class="liquid"></div>
+          </div>
+          <div class="bubbles" id="bubbles"></div>
+        </div>
+        <div class="drinking-effect" id="drinkingEffect"></div>
+      </div>
+    </div>
+
+    <p class="instructions">
+      Click the Fanta can and watch Angel drink it! 🥤✨
+    </p>
+
+    <script>
+      const fantaContainer = document.getElementById("fantaContainer");
+      const title = document.getElementById("title");
+      const liquidContainer = document.getElementById("liquidContainer");
+      const drinkingEffect = document.getElementById("drinkingEffect");
+      const bubbles = document.getElementById("bubbles");
+      const angel = document.getElementById("angel");
+      let isFinished = false;
+
+      // Create background stars
+      function createStars() {
+        for (let i = 0; i < 20; i++) {
+          const star = document.createElement("div");
+          star.className = "star";
+          star.textContent = "⭐";
+          star.style.left = Math.random() * 100 + "%";
+          star.style.top = Math.random() * 100 + "%";
+          star.style.animationDelay = Math.random() * 2 + "s";
+          document.body.appendChild(star);
+        }
+      }
+
+      // Create realistic sip sound
+      function playSipSound(audioContext, delay = 0) {
+        setTimeout(() => {
+          // Create a more realistic "sip" sound with noise
+          const bufferSize = audioContext.sampleRate * 0.3;
+          const buffer = audioContext.createBuffer(
+            1,
+            bufferSize,
+            audioContext.sampleRate
+          );
+          const data = buffer.getChannelData(0);
+
+          // Generate noise for sip sound
+          for (let i = 0; i < bufferSize; i++) {
+            data[i] = (Math.random() * 2 - 1) * 0.3;
+          }
+
+          const source = audioContext.createBufferSource();
+          const gainNode = audioContext.createGain();
+          const filter = audioContext.createBiquadFilter();
+
+          filter.type = "bandpass";
+          filter.frequency.value = 800;
+          filter.Q.value = 2;
+
+          source.buffer = buffer;
+          source.connect(filter);
+          filter.connect(gainNode);
+          gainNode.connect(audioContext.destination);
+
+          gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+          gainNode.gain.linearRampToValueAtTime(
+            0.15,
+            audioContext.currentTime + 0.05
+          );
+          gainNode.gain.exponentialRampToValueAtTime(
+            0.01,
+            audioContext.currentTime + 0.25
+          );
+
+          source.start(audioContext.currentTime);
+          source.stop(audioContext.currentTime + 0.3);
+        }, delay);
+      }
+
+      // Create bubble pop sound
+      function playBubbleSound(audioContext, delay = 0) {
+        setTimeout(() => {
+          const oscillator = audioContext.createOscillator();
+          const gainNode = audioContext.createGain();
+          const filter = audioContext.createBiquadFilter();
+
+          filter.type = "highpass";
+          filter.frequency.value = 2000;
+
+          oscillator.type = "sine";
+          oscillator.frequency.setValueAtTime(
+            400 + Math.random() * 200,
+            audioContext.currentTime
+          );
+          oscillator.frequency.exponentialRampToValueAtTime(
+            100,
+            audioContext.currentTime + 0.1
+          );
+
+          oscillator.connect(filter);
+          filter.connect(gainNode);
+          gainNode.connect(audioContext.destination);
+
+          gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+          gainNode.gain.linearRampToValueAtTime(
+            0.1,
+            audioContext.currentTime + 0.01
+          );
+          gainNode.gain.exponentialRampToValueAtTime(
+            0.001,
+            audioContext.currentTime + 0.1
+          );
+
+          oscillator.start(audioContext.currentTime);
+          oscillator.stop(audioContext.currentTime + 0.1);
+        }, delay);
+      }
+
+      // Create sound effect using Web Audio API
+      function playDrinkingSound() {
+        const audioContext = new (window.AudioContext ||
+          window.webkitAudioContext)();
+
+        // Play multiple sip sounds throughout the drinking animation
+        playSipSound(audioContext, 0);
+        playSipSound(audioContext, 500);
+        playSipSound(audioContext, 1000);
+        playSipSound(audioContext, 1500);
+        playSipSound(audioContext, 2000);
+
+        // Play bubble sounds randomly throughout
+        for (let i = 0; i < 15; i++) {
+          playBubbleSound(audioContext, Math.random() * 2500);
+        }
+      }
+
+      // Play completion sound
+      function playCompletionSound() {
+        const audioContext = new (window.AudioContext ||
+          window.webkitAudioContext)();
+
+        // Happy "ahh" sound
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+
+        oscillator.type = "sine";
+        oscillator.frequency.setValueAtTime(300, audioContext.currentTime);
+        oscillator.frequency.linearRampToValueAtTime(
+          400,
+          audioContext.currentTime + 0.3
+        );
+        oscillator.frequency.linearRampToValueAtTime(
+          350,
+          audioContext.currentTime + 0.6
+        );
+
+        gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+        gainNode.gain.linearRampToValueAtTime(
+          0.2,
+          audioContext.currentTime + 0.1
+        );
+        gainNode.gain.linearRampToValueAtTime(
+          0,
+          audioContext.currentTime + 0.6
+        );
+
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.6);
+      }
+
+      fantaContainer.addEventListener("click", function () {
+        if (isFinished) return;
+
+        isFinished = true;
+
+        // Show Angel
+        angel.classList.add("show");
+        setTimeout(() => {
+          angel.classList.add("drinking");
+        }, 300);
+
+        // Change title with celebration
+        setTimeout(() => {
+          title.textContent = "Finished Fanta! 🎉";
+          title.style.color = "#FFD700";
+          title.style.transform = "scale(1.2)";
+          title.style.textShadow =
+            "0 0 20px #FFD700, 3px 3px 6px rgba(0, 0, 0, 0.4)";
+
+          setTimeout(() => {
+            title.style.transform = "scale(1)";
+          }, 500);
+        }, 500);
+
+        // Play sounds
+        playDrinkingSound();
+        setTimeout(() => {
+          playCompletionSound();
+        }, 2500);
+
+        // Start drinking animation
+        animateDrinking();
+      });
+
+      function animateDrinking() {
+        // Activate drinking effect
+        drinkingEffect.classList.add("active");
+
+        // Animate liquid level decreasing
+        liquidContainer.style.height = "0%";
+
+        // Create bubbles
+        createBubbles();
+
+        // Create sparkles
+        createSparkles();
+
+        // Create confetti after completion
+        setTimeout(() => {
+          createConfetti();
+          angel.classList.remove("drinking");
+        }, 2500);
+      }
+
+      function createBubbles() {
+        const bubbleCount = 40;
+
+        for (let i = 0; i < bubbleCount; i++) {
+          setTimeout(() => {
+            const bubble = document.createElement("div");
+            bubble.className = "bubble";
+            bubble.style.left = Math.random() * 100 + "%";
+            const size = Math.random() * 12 + 8;
+            bubble.style.width = size + "px";
+            bubble.style.height = size + "px";
+            bubble.style.animationDelay = Math.random() * 0.3 + "s";
+            bubble.style.animationDuration = Math.random() * 1 + 1.5 + "s";
+            bubbles.appendChild(bubble);
+
+            setTimeout(() => {
+              bubble.remove();
+            }, 3000);
+          }, i * 40);
+        }
+      }
+
+      function createSparkles() {
+        const sparkleCount = 30;
+        const containerRect = fantaContainer.getBoundingClientRect();
+
+        for (let i = 0; i < sparkleCount; i++) {
+          setTimeout(() => {
+            const sparkle = document.createElement("div");
+            sparkle.className = "sparkle";
+            sparkle.style.left = Math.random() * containerRect.width + "px";
+            sparkle.style.top =
+              Math.random() * containerRect.height * 0.6 +
+              containerRect.height * 0.2 +
+              "px";
+            const colors = ["#FFD700", "#FF6B35", "#FFFFFF", "#4A90E2"];
+            sparkle.style.background =
+              colors[Math.floor(Math.random() * colors.length)];
+            fantaContainer.appendChild(sparkle);
+
+            setTimeout(() => {
+              sparkle.remove();
+            }, 1500);
+          }, i * 60);
+        }
+      }
+
+      function createConfetti() {
+        const confettiCount = 50;
+        const colors = ["#FFD700", "#FF6B35", "#4A90E2", "#FFFFFF", "#FFA366"];
+
+        for (let i = 0; i < confettiCount; i++) {
+          setTimeout(() => {
+            const confetti = document.createElement("div");
+            confetti.className = "confetti";
+            confetti.style.left = Math.random() * 100 + "%";
+            confetti.style.background =
+              colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.animationDelay = Math.random() * 0.5 + "s";
+            document.body.appendChild(confetti);
+
+            setTimeout(() => {
+              confetti.remove();
+            }, 3000);
+          }, i * 30);
+        }
+      }
+
+      // Initialize
+      createStars();
+    </script>
+  </body>
+</html>
